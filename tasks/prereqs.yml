@@ -55,6 +55,7 @@
     name: Crypt::RC4::XS
 
 - name: "clone ovms git repo"
+  become: true
   ansible.builtin.git:
     repo: "{{ ovms_repo }}"
     dest: /srv
