@@ -1,0 +1,25 @@
+---
+- name: ensure firewalld is started
+  become: true
+  ansible.builtin.systemd:
+    name: firewalld
+    state: started
+    enabled: yes
+
+- name: 'firewall-cmd allow service'
+  ansible.posix.firewalld:
+        service: "{{ item.service }}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+  with_items: "{{ firewall_cmd_allow }}"
+  when: item.service is defined
+
+- name: 'firewall-cmd allow port'
+  ansible.posix.firewalld:
+        port: "{{ item.port }}"
+        permanent: yes
+        immediate: yes
+        state: enabled
+  with_items: "{{ firewall_cmd_allow }}"
+  when: item.port is defined

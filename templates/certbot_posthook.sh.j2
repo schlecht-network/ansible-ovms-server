@@ -1,0 +1,9 @@
+#!/bin/bash
+# post-hook see renewalparams in /etc/letsencrypt/renewal/$(hostname -f).conf
+
+# replace ovms certificate
+cat /etc/letsencrypt/live/$(hostname -f)/privkey.pem /etc/letsencrypt/live/$(hostname -f)/fullchain.pem > /srv/Open-Vehicle-Server/v3/server/conf/ovms_server.pem
+chmod 0600 /srv/Open-Vehicle-Server/v3/server/conf/ovms_server.pem
+chown ovms /srv/Open-Vehicle-Server/v3/server/conf/ovms_server.pem
+
+systemctl restart ovms_server

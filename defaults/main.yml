@@ -1,0 +1,14 @@
+# url of the ovms git repo
+ovms_repo: https://github.com/schlecht-network/Open-Vehicle-Server.git
+
+# address of the mysql server
+mysql_server_address: "127.0.0.1"
+
+# mysql username for ovms to access the "openvehicles" database
+ovmsdbuser_username: ovmsdb
+
+# firewalld configuration
+firewall_cmd_allow:
+  - service: ssh
+  - port: 6869/tcp
+  - port: 6870/tcp

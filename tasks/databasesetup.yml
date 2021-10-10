@@ -1,0 +1,39 @@
+---
+- name: ensure openvehicles database exists
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name:
+      - openvehicles
+    state: present
+    encoding: utf8
+  no_log: true
+
+- name: Create local ovms database user
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: "{{ ovmsdbuser_username }}"
+    password: "{{ ovmsdbuser_db_pw }}"
+    priv: 'openvehicles.*:ALL'
+    state: present
+  no_log: true
+  when: mysql_server_address == "127.0.0.1"
+
+- name: Check if tables have already been created
+  ansible.builtin.stat:
+    path: "/srv/ovmschecks/tablescreated_done"
+  register: tablescreated_done
+
+- name: populate database with tables
+  ansible.builtin.shell: "mysql -h {{ mysql_server_address }} -u {{ ovmsdbuser_username }} -p {{ ovmsdbuser_db_pw }} openvehicles < /srv/Open-Vehicle-Server/v3/server/ovms_server.sql"
+  no_log: true
+  when: not tablescreated_done.stat.exists
+
+- name: Create rootpw_set_done file
+  become: true
+  ansible.builtin.file:
+    path: "/srv/ovmschecks/tablescreated_done"
+    state: touch
+    mode: '0644'
+  when: not tablescreated_done.stat.exists

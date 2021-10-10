@@ -1,0 +1,72 @@
+---
+- name: ensure mariadb is started
+  become: true
+  ansible.builtin.systemd:
+    name: mariadb
+    state: started
+    enabled: yes
+
+- name: Check if mysql root password has already been set
+  ansible.builtin.stat:
+    path: "/etc/mysql/myrootpw_set_done"
+  register: myrootpw_set_done
+
+- name: Set mysql root password
+  become: true
+  community.mysql.mysql_user: 
+    user: root 
+    password: "{{ mysql_root_password }}" 
+    host: localhost
+  no_log: true
+  when: not myrootpw_set_done.stat.exists
+
+- name: Create rootpw_set_done file
+  become: true
+  ansible.builtin.file:
+    path: "/etc/mysql/myrootpw_set_done"
+    state: touch
+    mode: '0644'
+  when: not myrootpw_set_done.stat.exists
+
+- name: Delete anonymous MySQL server user
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: ""
+    state: absent
+  no_log: true
+
+- name: Secure MySQL root remote access IPv6
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: "::1"
+  no_log: true
+
+- name: Secure MySQL root remote access IPv4
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: "127.0.0.1"
+  no_log: true
+
+- name: Secure MySQL root remote access localhost
+  community.mysql.mysql_user:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    user: root
+    password: "{{ mysql_root_password }}"
+    host: "localhost"
+  no_log: true
+
+- name: Remove MySQL test db
+  community.mysql.mysql_db:
+    login_user: root
+    login_password: "{{ mysql_root_password }}"
+    name: test
+    state: absent
+  no_log: true

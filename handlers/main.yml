@@ -1,0 +1,12 @@
+---
+- name: Restart mariadb
+  become: true
+  ansible.builtin.systemd:
+    name: mariadb
+    state: restarted
+
+- name: Restart ovms_server
+  become: true
+  ansible.builtin.systemd:
+    name: ovms_server
+    state: restarted

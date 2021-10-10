@@ -1,0 +1,71 @@
+---
+- name: "install prereqs"
+  become: true
+  apt:
+    name: 
+      - perl
+      - cpanminus
+      - build-essential
+      - libconfig-inifiles-perl
+      - libdigest-md5-file-perl
+      - libdigest-hmac-perl
+      - libcrypt-rc4-perl
+      - libmime-base64-urlsafe-perl
+      - libdbi-perl
+      - libdbd-mysql-perl
+      - libev-perl
+      - libanyevent-perl
+      - libanyevent-http-perl
+      - libanyevent-httpd-perl
+      - libhttp-parser-xs-perl
+      - libdata-uuid-perl
+      - libemail-mime-perl
+      - libemail-sender-perl
+      - libnet-ssleay-perl
+      - libjson-xs-perl
+      - libprotocol-websocket-perl
+      - firewalld
+    state: latest
+
+- name: "install mariadb-server"
+  become: true
+  apt:
+    name:
+    - mariadb-server
+    state: latest
+  notify:
+    - Restart mariadb
+  when: mysql_server_address != "127.0.0.1"
+
+- name: "install mariadb-client"
+  become: true
+  apt:
+    name:
+    - mariadb-client
+    state: latest
+  when: mysql_server_address == "127.0.0.1"
+
+- name: "ensure user ovms exists"
+  become: true
+  ansible.builtin.user:
+    name: ovms
+
+- name: "install cpanm prereqs"
+  community.general.cpanm:
+    name: Crypt::RC4::XS
+
+- name: "clone ovms git repo"
+  ansible.builtin.git:
+    repo: "{{ ovms_repo }}"
+    dest: /srv
+    owner: ovms
+    group: ovms
+
+- name: Create ovmschecks directory
+  become: true
+  ansible.builtin.file:
+    path: /srv/ovmschecks
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root

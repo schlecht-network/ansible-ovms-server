@@ -1,0 +1,16 @@
+---
+- name: create ovms_server config
+  become: true
+  ansible.builtin.template:
+    src: ovms_server.conf.j2
+    dest: /srv/Open-Vehicle-Server/v3/server/conf/ovms_server.conf
+    owner: ovms
+    group: ovms
+    mode: '0644'
+  notify:
+    - Restart ovms_server
+
+- name: create ovms systemd service file
+  ansible.builtin.template:
+    src: ovms_server.service.j2
+    dest: /etc/systemd/system/ovms_server.service

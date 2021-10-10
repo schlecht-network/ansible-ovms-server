@@ -1,0 +1,33 @@
+---
+- name: install certbot
+  become: true
+  apt:
+    name: certbot
+    state: latest
+
+- name: create posthook script
+  become: true
+  ansible.builtin.template:
+    src: certbot_posthook.sh.j2
+    dest: /root/certbot_posthook.sh
+
+- name: Check if cert has been requested initially
+  become: true
+  ansible.builtin.stat:
+    path: "/root/certrequest_done"
+  register: certrequest_done
+
+- name: run certbot
+  become: true
+  ansible.builtin.shell: certbot certonly --authenticator standalone --preferred-challenges http --post-hook "/root/certbot-posthook.sh" -d $(hostname -f) --non-interactive --agree-tos -m {{ letsencrypt.email }}
+  notify:
+    - Restart ovms_server
+  when: not certrequest_done.stat.exists
+
+- name: Create certrequest_done file
+  become: true
+  ansible.builtin.file:
+    path: "/root/certrequest_done"
+    state: touch
+    mode: '0644'
+  when: not certrequest_done.stat.exists
