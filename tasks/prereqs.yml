@@ -35,7 +35,7 @@
     state: latest
   notify:
     - Restart mariadb
-  when: mysql_server_address != "127.0.0.1"
+  when: mysql_server_address == "127.0.0.1"
 
 - name: "install mariadb-client"
   become: true
@@ -43,7 +43,7 @@
     name:
     - mariadb-client
     state: latest
-  when: mysql_server_address == "127.0.0.1"
+  when: mysql_server_address != "127.0.0.1"
 
 - name: "ensure user ovms exists"
   become: true
