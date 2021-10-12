@@ -51,6 +51,7 @@
     name: ovms
 
 - name: "install cpanm prereqs"
+  become: true
   community.general.cpanm:
     name: Crypt::RC4::XS
 
