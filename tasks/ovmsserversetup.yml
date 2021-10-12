@@ -10,6 +10,15 @@
   notify:
     - Restart ovms_server
 
+- name: "Create ovms log directory"
+  become: true
+  ansible.builtin.file:
+    path: /var/log/ovms
+    state: directory
+    mode: '0755'
+    owner: ovms
+    group: ovms
+
 - name: "create ovms systemd service file"
   become: true
   ansible.builtin.template:
