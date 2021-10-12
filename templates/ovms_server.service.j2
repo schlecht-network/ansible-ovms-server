@@ -5,7 +5,7 @@ After=network.target
 [Service]
 Type=simple
 WorkingDirectory=/srv/Open-Vehicle-Server/v3/server/
-ExecStart=/bin/sh -c 'exec ./ovms_server.pl >>/var/log/ovms_server.log 2>&1'
+ExecStart=/bin/sh -c 'exec ./ovms_server.pl >>/var/log/ovms/ovms_server.log 2>&1'
 Restart=always
 RestartSec=5
 User=ovms
