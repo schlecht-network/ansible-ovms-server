@@ -58,7 +58,7 @@
   become: true
   ansible.builtin.git:
     repo: "{{ ovms_repo }}"
-    dest: /srv
+    dest: /srv/Open-Vehicle-Server
 
 - name: "change owner/group of the cloned repository"
   become: true
@@ -68,7 +68,7 @@
     group: ovms
     recurse: yes
 
-- name: Create ovmschecks directory
+- name: "Create ovmschecks directory"
   become: true
   ansible.builtin.file:
     path: /srv/ovmschecks

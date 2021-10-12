@@ -1,5 +1,5 @@
 ---
-- name: create ovms_server config
+- name: "create ovms_server config"
   become: true
   ansible.builtin.template:
     src: ovms_server.conf.j2
@@ -10,7 +10,13 @@
   notify:
     - Restart ovms_server
 
-- name: create ovms systemd service file
+- name: "create ovms systemd service file"
+  become: true
   ansible.builtin.template:
     src: ovms_server.service.j2
     dest: /etc/systemd/system/ovms_server.service
+
+- name: "make shure ovms_server is enabled"
+  ansible.builtin.systemd:
+    name: ovms_server
+    enabled: yes

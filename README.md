@@ -10,3 +10,6 @@ ovmsdbuser_db_pw: someDIFFERENTsecureRANDOMpassword(or even better use ansible v
 # if you don't want to use letsencrypt just leave this out of your playbook
 letsencrypt:
   email: example@example.exam
+
+
+note: for the mysql tasks to work you need python3-pymysql on the ansible machine

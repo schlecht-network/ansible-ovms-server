@@ -1,20 +1,20 @@
 ---
-- name: Include prereqs
+- name: "Include prereqs"
   include: prereqs.yml
 
-- name: Include preparefirewalld
+- name: "Include preparefirewalld"
   include: preparefirewalld.yml
 
-- name: Include initialmysqlprep
+- name: "Include initialmysqlprep"
   include: initialmysqlprep.yml
   when: mysql_server_address == "127.0.0.1"
 
-- name: Include databasesetup
+- name: "Include databasesetup"
   include: databasesetup.yml
 
-- name: Include ovmsserversetup
+- name: "Include ovmsserversetup"
   include: ovmsserversetup.yml
 
-- name: Include letsencrypt
+- name: "Include letsencrypt"
   include: letsencrypt.yml
   when: letsencrypt is defined
