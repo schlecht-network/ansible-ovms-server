@@ -17,6 +17,7 @@
     dest: /etc/systemd/system/ovms_server.service
 
 - name: "make shure ovms_server is enabled"
+  become: true
   ansible.builtin.systemd:
     name: ovms_server
     enabled: yes

@@ -10,5 +10,6 @@ ovmsdbuser_username: ovmsdb
 # firewalld configuration
 firewall_cmd_allow:
   - service: ssh
+  - service: http #letsencrypt validation
   - port: 6869/tcp
   - port: 6870/tcp
